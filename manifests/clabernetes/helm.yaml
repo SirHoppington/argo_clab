@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: clabernetes
+  namespace: argocd
+spec:
+  project: cluster-staging
+  sources:
+  - repoURL: 'oci://ghcr.io/srl-labs/clabernetes'
+    targetRevision: ~0.3.3
+    chart: clabernetes
+    helm:
+      valueFiles:
+      - $values/defectdojo/production/values.yaml
+  - repoURL: https://gitlab.com/interdotlink/group-titan/manifests.git
+    targetRevision: HEAD
+    ref: values
+  - repoURL: https://gitlab.com/interdotlink/group-titan/manifests.git
+    targetRevision: HEAD
+    path: clabernetes/staging
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: clabernetes
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=false
+    - RespectIgnoreDifferences=true
+    - Validate=false
+  ignoreDifferences:
+  - group: apps
+    kind: StatefulSet
+    managedFieldsManagers:
+    - kube-controller-manager
