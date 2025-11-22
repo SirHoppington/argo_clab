@@ -1,0 +1,25 @@
+---
+apiVersion: clabernetes.containerlab.dev/v1alpha1
+kind: Topology
+metadata:
+  name: ci
+  namespace: c9s-lab1
+spec:
+  naming: prefixed
+  definition:
+    containerlab: |-
+          ---
+          name: ci
+          topology:
+            links: []
+            nodes:
+              r1-clab1:
+                image: ceos:4.31.2F
+                kind: arista_ceos
+                labels:
+                  type: lab
+              r2-clab1:
+                image: ceos:4.31.2F
+                kind: arista_ceos
+                labels:
+                  type: lab
