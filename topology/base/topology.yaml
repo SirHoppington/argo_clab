@@ -11,15 +11,50 @@ spec:
           ---
           name: ci
           topology:
-            links: []
+            kinds:
+              arista_ceos:
+                binds:
+                  - interfaces.json:/mnt/flash/EosIntfMapping.json:ro
+                env:
+                  CLAB_MGMT_VRF: OOB
+                  INTFTYPE: Ethernet
+            links:
+              - endpoints:
+                  - r1-clab1:eth1
+                  - r2-clab2:eth1 
             nodes:
               r1-clab1:
-                image: ceos:4.31.2F
+                image: ceos:latest
                 kind: arista_ceos
                 labels:
                   type: lab
               r2-clab1:
-                image: ceos:4.31.2F
+                image: ceos:latest
                 kind: arista_ceos
                 labels:
                   type: lab
+  deployment:
+    filesFromConfigMap:
+      r1-clab1:
+        - filePath: /clabernetes/interfaces.json
+          configMapName: interfaces
+          configMapPath: interfaces.json
+          mode: read
+        # - filePath: /mnt/startup/r3-lab2-de.cfg
+        #   configMapName: ceos-interface-map
+        #   configMapPath: r3-lab2-de.cfg
+        #   mode: read
+
+      r2-clab1:
+        - filePath: /clabernetes/interfaces.json
+          configMapName: interfaces
+          configMapPath: interfaces.json
+          mode: read
+        # - filePath: /mnt/startup/r4-lab2-de.cfg
+        #   configMapName: ceos-startup-configs
+        #   configMapPath: r4-lab2-de.cfg
+        #   mode: read
+
+    privilegedLauncher: true
+    persistence:
+      enabled: false
