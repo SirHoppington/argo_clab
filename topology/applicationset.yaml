@@ -5,6 +5,7 @@ metadata:
   namespace: argocd
 spec:
   generators:
+    # Check Repo settings
     - pullRequest:
         github:
           owner: sirhoppington
