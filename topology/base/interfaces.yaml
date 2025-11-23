@@ -2,7 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: interfaces
-  namespace: c9s-lab1
+  # namespace: c9s-lab1
+  namespace: clab-{{ pr_number }}
 data:
   interfaces.json: |
     {

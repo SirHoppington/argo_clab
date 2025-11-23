@@ -3,7 +3,8 @@ apiVersion: clabernetes.containerlab.dev/v1alpha1
 kind: Topology
 metadata:
   name: ci
-  namespace: c9s-lab1
+  # namespace: c9s-lab1
+  namespace: clab-{{ pr_number }}
 spec:
   naming: prefixed
   definition:
@@ -18,10 +19,12 @@ spec:
                 env:
                   CLAB_MGMT_VRF: OOB
                   INTFTYPE: Ethernet
+                exec:
+                  - /mnt/flash/init.sh
             links:
               - endpoints:
                   - r1-clab1:eth1
-                  - r2-clab2:eth1 
+                  - r2-clab1:eth1 
             nodes:
               r1-clab1:
                 image: ceos:latest
@@ -40,16 +43,29 @@ spec:
           configMapName: interfaces
           configMapPath: interfaces.json
           mode: read
-        # - filePath: /mnt/startup/r3-lab2-de.cfg
-        #   configMapName: ceos-interface-map
-        #   configMapPath: r3-lab2-de.cfg
-        #   mode: read
-
+        - filePath: /mnt/flash/init.sh
+          configMapName: exec-map
+          configMapPath: init.sh
+          mode: read
       r2-clab1:
         - filePath: /clabernetes/interfaces.json
           configMapName: interfaces
           configMapPath: interfaces.json
           mode: read
+        - filePath: /mnt/flash/init.sh
+          configMapName: exec-map
+          configMapPath: init.sh
+          mode: read
+        # - filePath: /mnt/startup/r3-lab2-de.cfg
+        #   configMapName: ceos-interface-map
+        #   configMapPath: r3-lab2-de.cfg
+        #   mode: read
+
+      # r2-clab1:
+      #   - filePath: /clabernetes/interfaces.json
+      #     configMapName: interfaces
+      #     configMapPath: interfaces.json
+      #     mode: read
         # - filePath: /mnt/startup/r4-lab2-de.cfg
         #   configMapName: ceos-startup-configs
         #   configMapPath: r4-lab2-de.cfg

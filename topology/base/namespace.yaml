@@ -2,6 +2,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-    name: c9s-lab1
+    # name: c9s-lab1
+    name: clab-{{ pr_number }}
     labels:
         pod-security.kubernetes.io/enforce: privileged

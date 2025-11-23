@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: pr-labs
+  namespace: argocd
+spec:
+  generators:
+    - pullRequest:
+        github:
+          owner: sirhoppington
+          repo: SirHoppington/argo_clab
+        requeueAfterSeconds: 30
+        pullRequestState: open
+
+  template:
+    metadata:
+      name: lab-pr-{{ pr_number }}
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/SirHoppington/argo_clab.git
+        targetRevision: {{ pr_head_sha }}
+        path: .
+        directory:
+          recurse: true
+      destination:
+        namespace: lab-pr-{{ pr_number }}
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
