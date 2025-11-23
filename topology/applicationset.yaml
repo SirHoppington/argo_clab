@@ -10,8 +10,6 @@ spec:
           owner: sirhoppington
           repo: SirHoppington/argo_clab
         requeueAfterSeconds: 30
-        pullRequestState: open
-
   template:
     metadata:
       name: lab-pr-{{ pr_number }}
@@ -19,7 +17,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/SirHoppington/argo_clab.git
-        targetRevision: {{ pr_head_sha }}
+        targetRevision: "{{ pr_head_sha }}"
         path: .
         directory:
           recurse: true
