@@ -7,7 +7,7 @@ spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=default"]
   generators:
-    # Check Repo settings
+    # Check Repo setting
     - pullRequest:
         github:
           owner: SirHoppington
