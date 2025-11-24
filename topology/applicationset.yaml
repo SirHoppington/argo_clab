@@ -4,12 +4,17 @@ metadata:
   name: pr-labs
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
     # Check Repo settings
     - pullRequest:
         github:
-          owner: sirhoppington
-          repo: SirHoppington/argo_clab
+          owner: SirHoppington
+          repo: argo_clab
+          tokenRef:
+            secretName: pull-request
+            key: token
         requeueAfterSeconds: 30
   template:
     metadata:
@@ -18,7 +23,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/SirHoppington/argo_clab.git
-        targetRevision: "{{ pr_head_sha }}"
+        targetRevision: "{{ head_sha }}"
         path: .
         directory:
           recurse: true
