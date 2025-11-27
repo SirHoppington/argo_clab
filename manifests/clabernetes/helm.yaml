@@ -6,12 +6,12 @@ metadata:
 spec:
   project: default
   sources:
-  - repoURL: 'oci://ghcr.io/srl-labs/clabernetes'
-    targetRevision: ~0.3.3
+  - repoURL: 'oci://ghcr.io/srl-labs/clabernetes/clabernetes'
+    targetRevision: 0.3.3
     chart: clabernetes
   - repoURL: https://github.com/SirHoppington/argo_clab.git
     targetRevision: HEAD
-    path: clabernetes/value
+    path: clabernetes
   destination:
     server: https://kubernetes.default.svc
     namespace: clabernetes
