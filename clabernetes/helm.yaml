@@ -9,9 +9,9 @@ spec:
   - repoURL: 'oci://ghcr.io/srl-labs/clabernetes/clabernetes'
     targetRevision: 0.3.3
     chart: clabernetes
-  - repoURL: https://github.com/SirHoppington/argo_clab.git
-    targetRevision: HEAD
-    path: clabernetes
+  # - repoURL: https://github.com/SirHoppington/argo_clab.git
+  #   targetRevision: HEAD
+  #   path: clabernetes
   destination:
     server: https://kubernetes.default.svc
     namespace: clabernetes
