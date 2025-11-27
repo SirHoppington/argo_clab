@@ -18,7 +18,7 @@ spec:
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: lab-pr-{{ .number }}
+      name: lab-pr-{{ .head_sha }}
     spec:
       project: default
       source:
@@ -28,7 +28,7 @@ spec:
         directory:
           recurse: true
       destination:
-        namespace: lab-pr-{{ .number }}
+        namespace: lab-pr-{{ .head_sha }}
         server: https://kubernetes.default.svc
       syncPolicy:
         automated:
