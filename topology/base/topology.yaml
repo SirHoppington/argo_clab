@@ -4,7 +4,7 @@ kind: Topology
 metadata:
   name: ci
   # namespace: c9s-lab1
-  namespace: lab-pr-{{ .head_short_sha_7 }}
+  # namespace: lab-pr-{{ .head_short_sha_7 }}
 spec:
   naming: prefixed
   definition:

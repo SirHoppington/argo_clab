@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: exec-map
   # namespace: c9s-lab1
-  namespace: lab-pr-{{ .head_short_sha_7 }}
+  # namespace: lab-pr-{{ .head_short_sha_7 }}
 data:
   init.sh: |
     #!/bin/bash

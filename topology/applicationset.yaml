@@ -18,17 +18,17 @@ spec:
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: lab-pr-{{ .head_short_sha_7 }}
+      name: "lab-pr-{{ .head_short_sha_7 }}"
     spec:
       project: default
       source:
         repoURL: https://github.com/SirHoppington/argo_clab.git
-        targetRevision: "{{ .head_short_sha_7 }}"
+        targetRevision: "{{ .head_sha }}"
         path: topology/base
         directory:
           recurse: true
       destination:
-        namespace: lab-pr-{{ .head_short_sha_7 }}
+        namespace: "lab-pr-{{ .head_short_sha_7 }}"
         server: https://kubernetes.default.svc
       syncPolicy:
         syncOptions:
