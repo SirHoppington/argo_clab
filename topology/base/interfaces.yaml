@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: interfaces
   # namespace: c9s-lab1
-  namespace: clab-{{ pr_number }}
+  # namespace: lab-pr-{{ .head_short_sha_7 }}
 data:
   interfaces.json: |
     {

@@ -4,27 +4,38 @@ metadata:
   name: pr-labs
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=default"]
   generators:
+    # Check Repo settings
     - pullRequest:
         github:
-          owner: sirhoppington
-          repo: SirHoppington/argo_clab
+          owner: SirHoppington
+          repo: argo_clab
+          tokenRef:
+            secretName: pull-request
+            key: token
         requeueAfterSeconds: 30
   template:
     metadata:
-      name: lab-pr-{{ pr_number }}
+      name: "lab-pr-{{ .head_short_sha_7 }}"
     spec:
       project: default
       source:
         repoURL: https://github.com/SirHoppington/argo_clab.git
-        targetRevision: "{{ pr_head_sha }}"
-        path: .
+        targetRevision: "{{ .head_sha }}"
+        path: topology/base
         directory:
           recurse: true
       destination:
-        namespace: lab-pr-{{ pr_number }}
+        namespace: "lab-pr-{{ .head_short_sha_7 }}"
         server: https://kubernetes.default.svc
       syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - RespectIgnoreDifferences=true
+      ignoreDifferences:
+          - group: ""
+            kind: Namespace
+            jsonPointers:
+            - /metadata/labels
