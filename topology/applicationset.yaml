@@ -31,10 +31,13 @@ spec:
         namespace: "lab-pr-{{ .head_short_sha_7 }}"
         server: https://kubernetes.default.svc
       syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
         syncOptions:
           - CreateNamespace=true
           - RespectIgnoreDifferences=true
-          # server-side apply added
+          # server-side apply add
           - ServerSideApply=true
           - preserveResourcesOnDeletion=false
       ignoreDifferences:
