@@ -7,7 +7,7 @@ spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=default"]
   generators:
-    # Check Repo settings
+    # Check Repo settings here
     - pullRequest:
         github:
           owner: SirHoppington
@@ -34,7 +34,8 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - RespectIgnoreDifferences=true
-          - ServerSideApply=false
+          # server-side apply added
+          - ServerSideApply=true
           - preserveResourcesOnDeletion=false
       ignoreDifferences:
           - group: ""
