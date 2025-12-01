@@ -23,7 +23,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/SirHoppington/argo_clab.git
-        targetRevision: "{{ .head_sha }}"
+        targetRevision: main
         path: topology/base
         directory:
           recurse: true
