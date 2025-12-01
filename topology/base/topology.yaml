@@ -3,7 +3,7 @@ apiVersion: clabernetes.containerlab.dev/v1alpha1
 kind: Topology
 metadata:
   name: ci
-  # namespace: c9s-lab1
+  # namespace updated
   namespace: lab-pr-{{ .number }}
 spec:
   naming: prefixed
