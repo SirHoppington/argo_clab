@@ -40,6 +40,8 @@ spec:
           # server-side apply added
           - ServerSideApply=true
           - preserveResourcesOnDeletion=false
+          - SkipDryRunOnMissingResource=true
+
       ignoreDifferences:
           - group: ""
             kind: Namespace
