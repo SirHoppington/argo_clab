@@ -4,7 +4,7 @@ kind: Topology
 metadata:
   name: ci
   # namespace updated
-  namespace: lab-pr-{{ .number }}
+  # namespace: lab-pr-{{ .number }}
 spec:
   naming: prefixed
   definition:
