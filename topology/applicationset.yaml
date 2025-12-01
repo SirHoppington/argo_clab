@@ -38,9 +38,8 @@ spec:
           - CreateNamespace=true
           - RespectIgnoreDifferences=true
           # server-side apply added
-          - ServerSideApply=true
+          # - ServerSideApply=true
           - preserveResourcesOnDeletion=false
-          - SkipDryRunOnMissingResource=true
 
       ignoreDifferences:
           - group: ""
