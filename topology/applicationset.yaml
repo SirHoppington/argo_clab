@@ -23,7 +23,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/SirHoppington/argo_clab.git
-        targetRevision: "{{ .head_sha }}"
+        targetRevision: "{{ .head_short_sha_7 }}"
         path: topology/base
         directory:
           recurse: true
