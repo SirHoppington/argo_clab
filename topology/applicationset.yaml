@@ -37,9 +37,10 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - RespectIgnoreDifferences=true
-          # server-side apply add
-          - ServerSideApply=true
+          # server-side apply added
+          # - ServerSideApply=true
           - preserveResourcesOnDeletion=false
+
       ignoreDifferences:
           - group: ""
             kind: Namespace
