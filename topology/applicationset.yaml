@@ -11,9 +11,9 @@ spec:
     - pullRequest:
         github:
           owner: SirHoppington
-          repo: argo_clab
+          repo: net_gitops
           tokenRef:
-            secretName: pull-request
+            secretName: pull-request-git
             key: token
         requeueAfterSeconds: 30
   template:
