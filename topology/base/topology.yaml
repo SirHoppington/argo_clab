@@ -3,8 +3,6 @@ apiVersion: clabernetes.containerlab.dev/v1alpha1
 kind: Topology
 metadata:
   name: ci
-  # namespace updated
-  # namespace: lab-pr-{{ .number }}
 spec:
   naming: prefixed
   definition:
@@ -17,7 +15,7 @@ spec:
                 binds:
                   - interfaces.json:/mnt/flash/EosIntfMapping.json:ro
                 env:
-                  CLAB_MGMT_VRF: OOB
+                  CLAB_MGMT_VRF: MGMT
                   INTFTYPE: Ethernet
                 exec:
                   - /mnt/flash/init.sh
@@ -47,6 +45,10 @@ spec:
           configMapName: exec-map
           configMapPath: init.sh
           mode: read
+        - filePath: /mnt/flash/startup-config
+          configMapName: r1-startup-config
+          configMapPath: startup-config.cfg
+          mode: read
       r2-clab1:
         - filePath: /clabernetes/interfaces.json
           configMapName: interfaces
@@ -56,21 +58,6 @@ spec:
           configMapName: exec-map
           configMapPath: init.sh
           mode: read
-        # - filePath: /mnt/startup/r3-lab2-de.cfg
-        #   configMapName: ceos-interface-map
-        #   configMapPath: r3-lab2-de.cfg
-        #   mode: read
-
-      # r2-clab1:
-      #   - filePath: /clabernetes/interfaces.json
-      #     configMapName: interfaces
-      #     configMapPath: interfaces.json
-      #     mode: read
-        # - filePath: /mnt/startup/r4-lab2-de.cfg
-        #   configMapName: ceos-startup-configs
-        #   configMapPath: r4-lab2-de.cfg
-        #   mode: read
-
     privilegedLauncher: true
     persistence:
       enabled: false
