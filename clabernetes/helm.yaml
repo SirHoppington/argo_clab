@@ -16,13 +16,11 @@ spec:
     server: https://kubernetes.default.svc
     namespace: clabernetes
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
     - CreateNamespace=true
     - ServerSideApply=false
     - RespectIgnoreDifferences=true
     - Validate=false
-  ignoreDifferences:
-  - group: apps
-    kind: StatefulSet
-    managedFieldsManagers:
-    - kube-controller-manager
