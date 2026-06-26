@@ -25,15 +25,18 @@ spec:
                   - r2-clab1:eth1 
             nodes:
               r1-clab1:
-                image: ceos:latest
+                image: 192.168.139.2:5000/ceos:latest
                 kind: arista_ceos
                 labels:
                   type: lab
               r2-clab1:
-                image: ceos:latest
+                image: 192.168.139.2:5000/ceos:latest
                 kind: arista_ceos
                 labels:
                   type: lab
+  imagePull:
+    insecureRegistries:
+      - 192.168.139.2:5000
   deployment:
     filesFromConfigMap:
       r1-clab1:
