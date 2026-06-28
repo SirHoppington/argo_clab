@@ -19,14 +19,21 @@ spec:
   template:
     metadata:
       name: "lab-pr-{{ .number }}"
+      annotations:
+        # Post the lab's health back to the PR's head commit as a GitHub status.
+        notifications.argoproj.io/subscribe.on-deployed.github: ""
+        notifications.argoproj.io/subscribe.on-health-degraded.github: ""
+        notifications.argoproj.io/subscribe.on-sync-failed.github: ""
     spec:
       project: default
       source:
-        repoURL: https://github.com/SirHoppington/argo_clab.git
-        targetRevision: main
+        # net_gitops is the code store: each PR's lab + startup-configs + tests
+        # are deployed from that PR's head commit, so the lab reflects the PR.
+        repoURL: https://github.com/SirHoppington/net_gitops.git
+        targetRevision: "{{ .head_sha }}"
+        # topology/base is a kustomize dir (configMapGenerator builds the
+        # startup-config maps from configs/<hostname>.cfg).
         path: topology/base
-        directory:
-          recurse: true
       destination:
         namespace: "lab-pr-{{ .number }}"
         server: https://kubernetes.default.svc

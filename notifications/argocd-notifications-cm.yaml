@@ -1,0 +1,67 @@
+---
+# Bridges ArgoCD app health -> GitHub commit status on the PR head commit.
+# The app's targetRevision is the PR head SHA (set by the pr-labs ApplicationSet),
+# so statuses land on the right commit and surface as a PR check.
+#
+# Needs a PAT with repo:status in the argocd-notifications-secret:
+#   kubectl -n argocd create secret generic argocd-notifications-secret \
+#     --from-literal=github-token=ghp_xxx --dry-run=client -o yaml | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+data:
+  service.webhook.github: |
+    url: https://api.github.com
+    headers:
+      - name: Authorization
+        value: token $github-token
+      - name: Accept
+        value: application/vnd.github+json
+
+  template.lab-success: |
+    webhook:
+      github:
+        method: POST
+        path: /repos/SirHoppington/net_gitops/statuses/{{.app.spec.source.targetRevision}}
+        body: |
+          {
+            "state": "success",
+            "context": "argocd/clab-lab",
+            "description": "Lab healthy - pyATS checks passed"
+          }
+
+  template.lab-failure: |
+    webhook:
+      github:
+        method: POST
+        path: /repos/SirHoppington/net_gitops/statuses/{{.app.spec.source.targetRevision}}
+        body: |
+          {
+            "state": "failure",
+            "context": "argocd/clab-lab",
+            "description": "Lab degraded - pyATS checks failed"
+          }
+
+  template.lab-error: |
+    webhook:
+      github:
+        method: POST
+        path: /repos/SirHoppington/net_gitops/statuses/{{.app.spec.source.targetRevision}}
+        body: |
+          {
+            "state": "error",
+            "context": "argocd/clab-lab",
+            "description": "Lab sync failed"
+          }
+
+  trigger.on-deployed: |
+    - when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+      send: [lab-success]
+  trigger.on-health-degraded: |
+    - when: app.status.health.status == 'Degraded'
+      send: [lab-failure]
+  trigger.on-sync-failed: |
+    - when: app.status.operationState.phase in ['Error', 'Failed']
+      send: [lab-error]
