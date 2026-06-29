@@ -1,0 +1,29 @@
+---
+# App-of-apps root. Apply ONCE:
+#   kubectl apply -f bootstrap/root.yaml
+# Thereafter ArgoCD keeps the child resources (clabernetes app, pr-labs
+# ApplicationSet, notifications config) applied + synced from this repo.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: clab-bootstrap
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SirHoppington/argo_clab.git
+    targetRevision: HEAD
+    path: .
+    directory:
+      recurse: true
+      # Only the ArgoCD resources - not the clabernetes Helm values dir etc.
+      include: '{clabernetes/helm.yaml,topology/applicationset.yaml,notifications/*.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

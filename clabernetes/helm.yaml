@@ -24,3 +24,12 @@ spec:
     - ServerSideApply=false
     - RespectIgnoreDifferences=true
     - Validate=false
+  # The clabernetes controller generates its CA/TLS/webhook certs at runtime and
+  # writes them into this Secret; the chart ships it empty -> permanent OutOfSync
+  # (and selfHeal would wipe the certs). Ignore its data.
+  ignoreDifferences:
+  - group: ""
+    kind: Secret
+    name: clabernetes-certificate
+    jsonPointers:
+    - /data
