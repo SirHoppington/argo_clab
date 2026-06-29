@@ -34,6 +34,10 @@ spec:
         # topology/base is a kustomize dir (configMapGenerator builds the
         # startup-config maps from configs/<hostname>.cfg).
         path: topology/base
+        kustomize:
+          # Stamp the per-PR namespace onto every resource AND the managed
+          # Namespace object, so prune on PR-close deletes the whole namespace.
+          namespace: "lab-pr-{{ .number }}"
       destination:
         namespace: "lab-pr-{{ .number }}"
         server: https://kubernetes.default.svc
