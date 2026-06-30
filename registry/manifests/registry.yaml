@@ -15,11 +15,6 @@
 #       insecureRegistries: ["local.registry:5000"]
 #       pullThroughOverride: never
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: registry
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: registry-data

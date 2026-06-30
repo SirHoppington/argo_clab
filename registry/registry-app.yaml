@@ -1,0 +1,25 @@
+---
+# Standalone Application for the in-cluster image registry. Picked up by the
+# app-of-apps (include glob), so a single app-of-apps apply brings it up.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: registry
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SirHoppington/argo_clab.git
+    targetRevision: HEAD
+    path: registry/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: registry
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

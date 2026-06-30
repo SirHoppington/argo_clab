@@ -31,3 +31,15 @@ patches:
       kind: NetworkPolicy
       metadata:
         name: ignored-matched-by-target
+  # Drop the default notifications CM; notifications/argocd-notifications-cm.yaml
+  # owns it (custom triggers/templates) via app-of-apps. Stops argocd-install and
+  # app-of-apps both claiming the same resource.
+  - target:
+      kind: ConfigMap
+      name: argocd-notifications-cm
+    patch: |
+      $patch: delete
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-notifications-cm
