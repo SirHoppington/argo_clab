@@ -1,0 +1,105 @@
+---
+# In-cluster private image registry. Clabernetes launcher pods pull from it by
+# cluster DNS (local.registry:5000 == Service "local" in namespace "registry") —
+# no pinned host IP, so it survives pod reschedules and node IP changes.
+#
+# Push from the Mac via port-forward:
+#   kubectl -n registry port-forward svc/local 5001:5000 &
+#   docker tag ceos:latest localhost:5001/ceos:latest
+#   docker push localhost:5001/ceos:latest
+#
+# Topology (net_gitops topology/base/topology.yaml):
+#   image: local.registry:5000/ceos:latest
+#   spec:
+#     imagePull:
+#       insecureRegistries: ["local.registry:5000"]
+#       pullThroughOverride: never
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: registry
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: registry-data
+  namespace: registry
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: standard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  namespace: registry
+  labels:
+    app: registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+        - name: registry
+          image: registry:2
+          ports:
+            - containerPort: 5000
+              name: http
+          env:
+            - name: REGISTRY_HTTP_ADDR
+              value: ":5000"
+            - name: REGISTRY_STORAGE_DELETE_ENABLED
+              value: "true"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/registry
+          readinessProbe:
+            httpGet:
+              path: /v2/
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /v2/
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 20
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: registry-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: local
+  namespace: registry
+  labels:
+    app: registry
+spec:
+  selector:
+    app: registry
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
