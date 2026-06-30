@@ -6,7 +6,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: clab-bootstrap
+  name: app-of-apps
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -19,7 +19,7 @@ spec:
     directory:
       recurse: true
       # Only the ArgoCD resources - not the clabernetes Helm values dir etc.
-      include: '{clabernetes/helm.yaml,topology/applicationset.yaml,notifications/*.yaml}'
+      include: '{argocd/install-app.yaml,clabernetes/helm.yaml,topology/applicationset.yaml,notifications/*.yaml}'
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

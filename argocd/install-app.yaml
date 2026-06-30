@@ -1,0 +1,26 @@
+---
+# ArgoCD self-manages its own install via the NP-free kustomize overlay
+# (argocd/install). Keeps the bundled NetworkPolicies pruned so a stray
+# upstream re-apply can't re-block redis secret-init under kindnet.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-install
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SirHoppington/argo_clab.git
+    targetRevision: HEAD
+    path: argocd/install
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

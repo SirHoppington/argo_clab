@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# ArgoCD install pinned to v3.4.4 (matches the running cluster).
+# kindnet (kindnetd) now ENFORCES NetworkPolicies but mis-applies ArgoCD's
+# bundled ones, blocking redis secret-init from the API (secret argocd-redis
+# never created -> controller/repo/server CreateContainerConfigError) and
+# controller->repo-server (:8081). Strip the NetworkPolicies so kindnet has
+# nothing to mis-enforce.
+#
+# Bootstrap (once, before app-of-apps). Server-side apply is REQUIRED: the
+# applicationsets CRD exceeds the 256KB last-applied-configuration annotation
+# limit under client-side apply.
+#   kubectl create namespace argocd
+#   kubectl apply -k argocd/install --server-side --force-conflicts
+# Thereafter the argocd-install Application (argocd/install-app.yaml) keeps it
+# reconciled NP-free via GitOps.
+
+namespace: argocd
+
+resources:
+  - https://github.com/argoproj/argo-cd//manifests/cluster-install?ref=v3.4.4
+
+# Delete every bundled NetworkPolicy (broken under kindnet NP enforcement).
+patches:
+  - target:
+      kind: NetworkPolicy
+    patch: |
+      $patch: delete
+      apiVersion: networking.k8s.io/v1
+      kind: NetworkPolicy
+      metadata:
+        name: ignored-matched-by-target
